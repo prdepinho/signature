@@ -1,0 +1,4 @@
+C:/Users/Paulo/projects/signature/build/CMakeFiles/signature.dir
+C:/Users/Paulo/projects/signature/build/CMakeFiles/test.dir
+C:/Users/Paulo/projects/signature/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Paulo/projects/signature/build/CMakeFiles/ZERO_CHECK.dir
