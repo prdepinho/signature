@@ -38,6 +38,9 @@ or
 Test the functions:
   curl -X GET "127.0.0.1:8080/fib?i=8" -H "Content-Type: application/json"
   curl -X POST 127.0.0.1:8080/foo -H "Content-Type: application/json" -d '{"spam": 10}'
+
+Test /signature
+  curl -X POST "127.0.0.1:8080/signature" -F "metadata=bry123456;filename=metadata.txt" -F "document=@build/resources/arquivos/doc.txt" -F "certification=@build/resources/pkcs12/certificado_teste_hub.pfx"
  */
 
 
