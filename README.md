@@ -46,6 +46,20 @@ this challenge that I failed to achieve some objectives. I wish I had more time
 to study it better. This was the most time consuming part of the project. I wrote 
 tests for the functions and developped the endpoints for the server.
 
+The sign function should be equivalent to the following commands:
+```bash
+openssl pkcs12 -in pkcs12/certificado_teste_hub.pfx -out chave.pem -nodes
+openssl pkey -in chave.pem -out pkey.pem
+openssl x509 -in chave.pem -out cert.pem
+openssl smime -sign -in arquivos/doc.txt -signer cert.pem -inkey pkey.pem -out signature.p7s -outform DER -binary -md sha512 -nodetach
+```
+
+And the verify function should be equivalent to this:
+```bash
+openssl smime -verify -in signature.p7s -inform DER -noverify -out verified.txt
+```
+
+
 
 ## Future work
 
@@ -55,7 +69,8 @@ conversion of the DER binary into Base64. It should use the sha-512 algorithm
 that I prepared in the Digest class, but I couldn't figure that out, so it uses
 the default sha-256 algorithm instead. The functions `/signature` and `/verify`
 do not communicate well with each other, since the output of `/signature` is in
-Base64, but `/verify` requires it in DER format. 
+Base64, but `/verify` requires it in DER format. Verify should also have extracted 
+more data from the signed document.
 
 
 ## Design decisions
