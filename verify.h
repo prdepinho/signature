@@ -28,6 +28,11 @@ private:
 
 class VerifyException : public std::exception {};
 
+// Makes a digital signature.
+// - p7s: the signed p7s document in DER format.
+// - out: is the original document
+// - returns: a boolean, whether the document is valid or not
+// - throws VerifyException
 namespace Verify {
   bool verify(
       std::vector<unsigned char> p7s,

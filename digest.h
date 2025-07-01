@@ -6,6 +6,10 @@
 
 class DigestException : public std::exception {};
 
+// Wrapper class for the OpenSSL sha512 digest algorithm.
+// This works just like the OpenSSL functions. Start by calling init(), then 
+// call update() as many times as you need to add data, and get the digest with result().
+// Any of these functions may raise DigestException.
 class Digest {
 public:
   Digest();

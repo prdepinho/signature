@@ -40,7 +40,7 @@ Test the functions:
   curl -X POST 127.0.0.1:8080/foo -H "Content-Type: application/json" -d '{"spam": 10}'
 
 Test /signature
-  curl -X POST "127.0.0.1:8080/signature" -F "metadata=bry123456;filename=metadata.txt" -F "document=@build/resources/arquivos/doc.txt" -F "certification=@build/resources/pkcs12/certificado_teste_hub.pfx"
+  curl -X POST "127.0.0.1:8080/signature" -F "password=bry123456;filename=metadata.txt" -F "document=@build/resources/arquivos/doc.txt" -F "certificate=@build/resources/pkcs12/certificado_teste_hub.pfx"
 
 Test /verify
   curl -X POST "127.0.0.1:8080/verify" -F "p7s=@build/resources/output.p7s"
@@ -88,25 +88,6 @@ public:
 
 
 int main(void) {
-    ///////////////////////////////
-    z_stream defstream;
-
-    Poco::MD5Engine md5;
-    Poco::DigestOutputStream ds(md5);
-
-    ds << "foobarspameggs";
-    ds.close();
-
-    std::cout << "Digest: " << Poco::DigestEngine::digestToHex(md5.digest()) << std::endl;
-
-    ///////////////////////////////
-
-    std::vector<int> ints = { 1, 1, 2, 3, 5, 8, 13, 21, 34 };
-
-    for (int i: ints) {
-        std::cout << "Hello world: " << i << std::endl;
-    }
-    ///////////////////////////////
 
     HTTPRequestHandlerFactory::Ptr factory = new ServerFactory;
     HTTPServerParams::Ptr params = new HTTPServerParams;

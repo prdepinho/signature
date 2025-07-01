@@ -27,10 +27,7 @@ void SignatureHandler::handleRequest(HTTPServerRequest &request, HTTPServerRespo
 
       // sign
       std::vector<unsigned char> p7s = Signature::sign(
-          handler.document, handler.certification, handler.password);
-
-      std::cout << " - done: " << handler.i << std::endl;
-      std::cout << "size: " << p7s.size() << std::endl;
+          handler.document, handler.certificate, handler.password);
 
       // transform into base64
       std::string pem;
@@ -84,7 +81,6 @@ void SignaturePartHandler::handlePart(const MessageHeader &header, std::istream 
   std::cout << "Name: " << name << std::endl;
   std::cout << "Content-Type: " << content_type << std::endl;
   std::cout << "Filename: " << filename << std::endl;
-  this->i += 1;
 
   if (!filename.empty()) {
     if (name == "document") {
@@ -96,16 +92,16 @@ void SignaturePartHandler::handlePart(const MessageHeader &header, std::istream 
 
       std::cout << "copied document: " << this->document.size() << std::endl;
     }
-    else if (name == "certification") {
+    else if (name == "certificate") {
       std::ostringstream ss(std::ios::binary);
       StreamCopier::copyStream(stream, ss);
 
       std::string data = ss.str();
-      this->certification = std::vector<unsigned char>(data.begin(), data.end());
+      this->certificate = std::vector<unsigned char>(data.begin(), data.end());
       
-      std::cout << "copied certification: " << this->certification.size() << std::endl;
+      std::cout << "copied certificate: " << this->certificate.size() << std::endl;
     }
-    else if (name == "metadata") {
+    else if (name == "password") {
       std::ostringstream ss;
       StreamCopier::copyStream(stream, ss);
       this->password = ss.str();
@@ -131,7 +127,7 @@ std::vector<unsigned char> Signature::sign(
   X509 *cert = NULL;
   STACK_OF(X509) *ca = NULL;
 
-  // get private key and certification
+  // get private key and certificate
   {
     BIO *bio = BIO_new_mem_buf(pfx.data(), static_cast<int>(pfx.size()));
     PKCS12 *pkcs12 = d2i_PKCS12_bio(bio, NULL);

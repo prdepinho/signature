@@ -22,9 +22,8 @@ public:
       std::istream &stream) override;
 
 private:
-  int i = 0;
   std::vector<unsigned char> document;
-  std::vector<unsigned char> certification;
+  std::vector<unsigned char> certificate;
   std::string password;
 
 };
@@ -32,6 +31,12 @@ private:
 
 class SignatureException : public std::exception {};
 
+// Makes a digital signature.
+// - in: is the document you need to sign.
+// - pfx: is the certificate
+// - password: is the password for the certificate
+// - returns: the signed p7s document in DER format.
+// - throws SignatureException
 namespace Signature {
   std::vector<unsigned char> sign(
       std::vector<unsigned char> in,
