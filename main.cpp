@@ -41,6 +41,19 @@ Test the functions:
 
 Test /signature
   curl -X POST "127.0.0.1:8080/signature" -F "metadata=bry123456;filename=metadata.txt" -F "document=@build/resources/arquivos/doc.txt" -F "certification=@build/resources/pkcs12/certificado_teste_hub.pfx"
+
+
+Sign:
+  openssl pkcs12 -in pkcs12/certificado_teste_hub.pfx -out chave.pem -nodes
+  openssl pkey -in chave.pem -out pkey.pem
+  openssl x509 -in chave.pem -out cert.pem
+  openssl smime -sign -in arquivos/doc.txt -signer cert.pem -inkey pkey.pem -out signature.p7s -outform DER -binary -md sha512 -nodetach
+
+Verify:
+  openssl smime -verify -in signature.p7s -inform DER -noverify -out verified.txt
+
+Get Data:
+  openssl cms -cmsout -print -inform DER -in output.p7s 
  */
 
 

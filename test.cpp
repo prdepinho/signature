@@ -7,6 +7,8 @@
 
 #include "fibonacci.h"
 #include "digest.h"
+#include "signature.h"
+#include "verify.h"
 
 
 TEST_CASE("test fibonacci function") {
@@ -56,10 +58,57 @@ TEST_CASE("SHA512 digest") {
   REQUIRE(result == expected);
 }
 
-TEST_CASE("test case for testing cases") {
-  REQUIRE(1 == 1);
+TEST_CASE("signature") {
+  std::vector<unsigned char> document;
+  std::vector<unsigned char> pfx;
+  std::string password = "bry123456";
+
+  {
+    std::ifstream file("resources/arquivos/doc.txt", std::ios::binary);
+    REQUIRE(file.is_open());
+    document.assign(
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>());
+  }
+  {
+    std::ifstream file("resources/pkcs12/certificado_teste_hub.pfx", std::ios::binary);
+    REQUIRE(file.is_open());
+    pfx.assign(
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>());
+  }
+
+
+  std::vector<unsigned char> p7s = Signature::sign(document, pfx, password);
+
+  std::cout << "size: " << p7s.size() << std::endl;
+  {
+    std::ofstream file("resources/output.p7s", std::ios::binary);
+    REQUIRE(file.is_open());
+    file.write(
+        reinterpret_cast<const char*>(p7s.data()),
+        static_cast<std::streamsize>(p7s.size()));
+  }
 }
 
-TEST_CASE("more testing cases") {
-  REQUIRE(1 == 1);
+TEST_CASE("verify") {
+  std::vector<unsigned char> p7s;
+  std::vector<unsigned char> document;
+  {
+    std::ifstream file("resources/output.p7s", std::ios::binary);
+    REQUIRE(file.is_open());
+    p7s.assign(
+        std::istreambuf_iterator<char>(file),
+        std::istreambuf_iterator<char>());
+  }
+  bool valid = Verify::verify(p7s, document);
+
+  std::cout << "valid: " << (valid ? "true" : "false") << std::endl;
+  std::cout << "size: " << document.size() << std::endl;
+  for (unsigned char c : document) {
+    std::cout << c;
+  }
+  std::cout << std::endl;
+
+  REQUIRE(valid);
 }

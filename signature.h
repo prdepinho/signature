@@ -15,13 +15,27 @@ public:
 
 
 class SignaturePartHandler : public Poco::Net::PartHandler {
+  friend class SignatureHandler;
 public:
   void handlePart(
       const Poco::Net::MessageHeader &header,
       std::istream &stream) override;
 
+private:
   int i = 0;
   std::vector<unsigned char> document;
   std::vector<unsigned char> certification;
+  std::string password;
 
 };
+
+
+class SignatureException : public std::exception {};
+
+namespace Signature {
+  std::vector<unsigned char> sign(
+      std::vector<unsigned char> in,
+      std::vector<unsigned char> pfx,
+      std::string password);
+
+}

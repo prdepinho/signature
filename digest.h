@@ -9,7 +9,8 @@ class DigestException : public std::exception {};
 class Digest {
 public:
   Digest();
-  ~Digest();
+  virtual ~Digest();
+
   void init();
   void update(std::string data);
   std::vector<unsigned char> result();
