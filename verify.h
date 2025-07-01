@@ -3,6 +3,7 @@
 #include <Poco/Net/HTTPRequestHandler.h>
 #include <Poco/Net/HTTPServerRequest.h>
 #include <Poco/Net/HTTPServerResponse.h>
+#include <Poco/Net/PartHandler.h>
 #include <vector>
 
 class VerifyHandler : public Poco::Net::HTTPRequestHandler {
@@ -11,6 +12,19 @@ public:
         Poco::Net::HTTPServerRequest &request,
         Poco::Net::HTTPServerResponse &response) override;
 };
+
+class VerifyPartHandler : public Poco::Net::PartHandler {
+  friend class VerifyHandler;
+public:
+  void handlePart(
+      const Poco::Net::MessageHeader &header,
+      std::istream &stream) override;
+
+private:
+  std::vector<unsigned char> p7s;
+
+};
+
 
 class VerifyException : public std::exception {};
 

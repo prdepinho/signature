@@ -9,6 +9,8 @@ using namespace Poco;
 
 void FibHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) {
   Object::Ptr json = new Object;
+  json->set("ok", true);
+
   if (request.getMethod() == HTTPRequest::HTTP_GET) {
 
     try {
@@ -30,10 +32,12 @@ void FibHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &r
     }
     catch (const Poco::SyntaxException &e) {
       std::cout << e.what() << std::endl;
+      json->set("ok", false);
       response.setStatus(HTTPResponse::HTTP_BAD_REQUEST);
     }
   }
   else {
+    json->set("ok", false);
     std::cout << "Method not allowed" << std::endl;
     response.setStatus(HTTPResponse::HTTP_METHOD_NOT_ALLOWED);
   }

@@ -17,36 +17,47 @@ using namespace Poco;
 
 void SignatureHandler::handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) {
   Object::Ptr json = new Object;
+  json->set("ok", true);
+
   if (request.getMethod() == HTTPRequest::HTTP_POST) {
-    SignaturePartHandler handler;
-    HTMLForm form(request, request.stream(), handler);
 
-    // sign
-    std::vector<unsigned char> p7s = Signature::sign(
-        handler.document, handler.certification, handler.password);
+    try {
+      SignaturePartHandler handler;
+      HTMLForm form(request, request.stream(), handler);
 
-    std::cout << " - done: " << handler.i << std::endl;
-    std::cout << "size: " << p7s.size() << std::endl;
+      // sign
+      std::vector<unsigned char> p7s = Signature::sign(
+          handler.document, handler.certification, handler.password);
 
-    // transform into base64
-    std::string pem;
-    {
-      std::ostringstream ss;
-      Base64Encoder encoder(ss);
-      encoder.write(
-          reinterpret_cast<const char*>(p7s.data()),
-          static_cast<std::streamsize>(p7s.size()));
-      encoder.close();
-      pem = ss.str();
+      std::cout << " - done: " << handler.i << std::endl;
+      std::cout << "size: " << p7s.size() << std::endl;
+
+      // transform into base64
+      std::string pem;
+      {
+        std::ostringstream ss;
+        Base64Encoder encoder(ss);
+        encoder.write(
+            reinterpret_cast<const char*>(p7s.data()),
+            static_cast<std::streamsize>(p7s.size()));
+        encoder.close();
+        pem = ss.str();
+      }
+
+      std::cout << "Base64: " << pem << std::endl;
+
+      json->set("pem", pem);
+      response.setStatus(HTTPResponse::HTTP_OK);
+
     }
-
-    std::cout << "Base64: " << pem << std::endl;
-
-    json->set("pem", pem);
-    response.setStatus(HTTPResponse::HTTP_OK);
+    catch (const SignatureException &ex) {
+      json->set("ok", false);
+      response.setStatus(HTTPResponse::HTTP_BAD_REQUEST);
+    }
   }
   else {
     std::cout << "Method not allowed" << std::endl;
+    json->set("ok", false);
     response.setStatus(HTTPResponse::HTTP_METHOD_NOT_ALLOWED);
   }
   response.setContentType("application/json");

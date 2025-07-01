@@ -42,6 +42,8 @@ Test the functions:
 Test /signature
   curl -X POST "127.0.0.1:8080/signature" -F "metadata=bry123456;filename=metadata.txt" -F "document=@build/resources/arquivos/doc.txt" -F "certification=@build/resources/pkcs12/certificado_teste_hub.pfx"
 
+Test /verify
+  curl -X POST "127.0.0.1:8080/verify" -F "p7s=@build/resources/output.p7s"
 
 Sign:
   openssl pkcs12 -in pkcs12/certificado_teste_hub.pfx -out chave.pem -nodes
@@ -62,41 +64,13 @@ using namespace Poco::Net;
 using namespace Poco::JSON;
 using namespace Poco;
 
-class ServerHandler : public HTTPRequestHandler {
-public:
-    void handleRequest(HTTPServerRequest &request, HTTPServerResponse &response) override {
-        if (request.getMethod() == HTTPRequest::HTTP_GET) {
-            std::cout << "Get" << std::endl;
-            response.setStatus(HTTPResponse::HTTP_OK);
-
-        } else if (request.getMethod() == HTTPRequest::HTTP_POST) {
-            std::cout << "Post" << std::endl;
-            response.setStatus(HTTPResponse::HTTP_OK);
-
-        } else {
-            std::cout << "Method not allowed" << std::endl;
-            response.setStatus(HTTPResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
-
-        response.setContentType("application/json");
-
-        Object::Ptr json = new Object;
-        json->set("message", "Hello world Poco Loco");
-
-        std::ostream &out = response.send();
-        json->stringify(out);
-    }
-};
 
 class ServerFactory : public HTTPRequestHandlerFactory {
 public:
     HTTPRequestHandler *createRequestHandler(const HTTPServerRequest &request) override {
         std::string uri = request.getURI();
         std::cout << "request uri: " << uri << std::endl;
-        if (uri == "/foo") {
-            return new ServerHandler;
-        }
-        else if (uri == "/fib") {
+        if (uri == "/fib") {
             return new FibHandler;
         }
         else if (uri == "/signature") {
