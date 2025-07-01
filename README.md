@@ -10,15 +10,12 @@ This project consists of the following files:
 |----------------------------|--------------------------------------------------------------|
 | main.cpp                   | the main function                                            |
 | test.cpp                   | the testing file                                             |
-|                            |                                                              |
 | digest.cpp, digest.h       | A class that encapsulates the openssl sha512 algorithm       |
 | fibonacci.cpp, fibonacci.h | A request handler that answers for the /fib endpoint         |
 | signature.cpp, signature.h | A request handler that answers for the /signature endpoint   |
 | verify.cpp, verify.h       | A request handler that answers for the /verify endpoint      |
-|                            |                                                              |
 | CMakeLists.txt             | Cmake file                                                   |
 | conanfile.txt              | Conan requirements                                           |
-|                            |                                                              |
 | build/resources/           | Folder containing the files used in testing.                 |
 
 
@@ -34,15 +31,20 @@ testing with Catch2. The cryptographic algorithms are from OpenSSL.
 Of these, I had experience with CMake, so everything else was new to me. The most difficult was by far
 OpenSSL. 
 
-## Process
+## The Process
 
-I started by setting up a conanfile.txt and a CMakeLists.txt for the building pipeline of the project.
-Then I got acquainted with the Poco packages and learned how to make a simple REST server, and prepared a 
-file for unit tests. Next I struggled to figure out how to make anything with OpenSSL. 
-Documentation is very arid and is not perfect for learning the tool. Fortunately I could navigate
-the C-isms of the library and the documentation describes its functions well. Whilst the other tools had
-tutorials and a gentler learning curve, OpenSSL is very dense and hard to get into. I wish I had more time to 
-understand it better.
+I started by setting up a conanfile.txt and a CMakeLists.txt for the building
+pipeline of the project. Then I got acquainted with the Poco packages and
+learned how to make a simple REST server that serves a Fibonacci function, then
+I prepared a file for unit tests. Next I studied how to make signatures and
+verifications in OpenSSL. This proved to be a challenge because even though the
+documentation is complete and useful for learning its functions, it doesn't
+make it easy to get into it, so I struggled to figure out how to make
+signatures and verifications. Whilst the other tools had tutorials and a
+gentler learning curve, OpenSSL is very dense and hard to get into. It is from
+this challenge that I failed to achieve some objectives. I wish I had more time
+to study it better. This was the most time consuming part of the project. I wrote 
+tests for the functions and developped the endpoints for the server.
 
 
 ## Future work
@@ -50,7 +52,7 @@ understand it better.
 There are some things that I couldn't achieve in this project. The `/verify`
 function does not return the signed document in the PEM format, but as a simple
 conversion of the DER binary into Base64. It should use the sha-512 algorithm
-that I prepared in the Digest class, but I couldn't figure it out, so it uses
+that I prepared in the Digest class, but I couldn't figure that out, so it uses
 the default sha-256 algorithm instead. The functions `/signature` and `/verify`
 do not communicate well with each other, since the output of `/signature` is in
 Base64, but `/verify` requires it in DER format. 
@@ -82,6 +84,7 @@ To build this project, you need the latest version of CMake, Conan and GCC.
 
 ## Install libraries and refresh CMake files
 
+Execute the first command in the home folder of the project. The other commands in the /build folder.
 ``` bash
 conan install . --output-folder=build --build=missing
 cd build
