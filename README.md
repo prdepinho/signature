@@ -37,14 +37,15 @@ I started by setting up a conanfile.txt and a CMakeLists.txt for the building
 pipeline of the project. Then I got acquainted with the Poco packages and
 learned how to make a simple REST server that serves a Fibonacci function, then
 I prepared a file for unit tests. Next I studied how to make signatures and
-verifications in OpenSSL. This proved to be a challenge because even though the
+verifications in OpenSSL, simultaneously figuring how the technology works
+along with the library. This proved to be a challenge because even though the
 documentation is complete and useful for learning its functions, it doesn't
 make it easy to get into it, so I struggled to figure out how to make
 signatures and verifications. Whilst the other tools had tutorials and a
 gentler learning curve, OpenSSL is very dense and hard to get into. It is from
 this challenge that I failed to achieve some objectives. I wish I had more time
-to study it better. This was the most time consuming part of the project. I wrote 
-tests for the functions and developped the endpoints for the server.
+to study it better. This was the most time consuming part of the project. I
+wrote tests for the functions and developped the endpoints for the server.
 
 The sign function should be equivalent to the following commands:
 ```bash
